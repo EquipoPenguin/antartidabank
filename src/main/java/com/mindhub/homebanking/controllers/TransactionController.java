@@ -5,12 +5,21 @@ import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -23,12 +32,15 @@ public class TransactionController {
     @Autowired
     private ClientRepository clientRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     @Transactional
     @PostMapping("/transactions")
     public ResponseEntity<Object> transfer(
             Authentication authentication,
             @RequestParam String fromAccountNumber, @RequestParam String toAccountNumber,
-            @RequestParam double amount, @RequestParam String description){
+            @RequestParam double amount, @RequestParam String description) throws MessagingException {
 
         Client client = this.clientRepository.findByEmail(authentication.getName());
         Account originAccount = accountRepository.findByNumber(fromAccountNumber);
@@ -44,7 +56,7 @@ public class TransactionController {
         }
 
         //Verificar que los números de cuenta no sean iguales
-        if (fromAccountNumber == toAccountNumber) {
+        if (fromAccountNumber.equals(toAccountNumber) ) {
             return new ResponseEntity<>("Elige una cuenta de destino diferente", HttpStatus.FORBIDDEN);
         }
 
@@ -85,11 +97,34 @@ public class TransactionController {
                 destinationAccount)
         );
 
+        InputStreamSource iss = new InputStreamSource() {
+            @Override
+            public InputStream getInputStream() throws IOException {
+                // provide fresh InputStream
+                return new FileInputStream("C:\\\\Users\\\\carolina.zapata\\\\Documents\\\\DESARROLLO DE APP JAVA Y API FOUNDATIONS\\\\equipopenguinantartidabank\\\\src\\\\main\\\\resources\\\\static\\\\web\\\\img\\\\LOGO_CON_TEXTO.png");
+            }
+        };
+
+        emailService.send(
+                "noreply@antartidabank.com",
+                client.getEmail(),
+                new Date(),
+                "Transfer Notification",
+                "A transfer for $"+amount+" has been made from your VIN"+originAccount.getNumber()+" account to the VIN"+ destinationAccount.getNumber()+" account",
+                "LOGO_CON_TEXTO.png",
+                iss
+
+        );
+
         originAccount.setBalance(originAccount.getBalance() - amount);
         destinationAccount.setBalance(destinationAccount.getBalance() + amount);
 
         accountRepository.save(originAccount);
         accountRepository.save(destinationAccount);
+
+
+
+
 
         return new ResponseEntity<>(HttpStatus.CREATED);
 
