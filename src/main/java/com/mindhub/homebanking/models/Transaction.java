@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Entity
 public class Transaction {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
@@ -74,4 +73,5 @@ public class Transaction {
     public void setAccount(Account account) {
         this.account = account;
     }
+
 }
