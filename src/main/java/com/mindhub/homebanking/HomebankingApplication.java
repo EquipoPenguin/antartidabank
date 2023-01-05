@@ -56,9 +56,10 @@ public class HomebankingApplication {
 		   	cardRepository.save(new Card("Melba Morel", CardType.CREDIT, CardColor.TITANIUM, "4345 4859 6325 8564", "369", LocalDateTime.now(), LocalDateTime.now().plusYears(5), client1 ));
 
 
-			Client client2 = repository.save(new Client("Carolina", "Zapata", "carolina@mindhub.com", passwordEncoder.encode("1234")));
+			Client client2 = repository.save(new Client("Carolina", "Zapata", "carolinazapatavidal@gmail.com", passwordEncoder.encode("1234")));
 
 			Account account3 = accountRepository.save(new Account("VIN367", LocalDateTime.now(), 10000, client2));
+			Account account4 = accountRepository.save(new Account("VIN368", LocalDateTime.now(), 100000, client2));
 			transactionRepository.save(new Transaction(TransactionType.DEBIT, -5000, "deposit2", LocalDateTime.now(), account3));
 			transactionRepository.save(new Transaction(TransactionType.CREDIT, 10000, "credit 3", LocalDateTime.now(), account3));
 
