@@ -5,12 +5,16 @@ import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -23,12 +27,15 @@ public class TransactionController {
     @Autowired
     private ClientRepository clientRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     @Transactional
     @PostMapping("/transactions")
     public ResponseEntity<Object> transfer(
             Authentication authentication,
             @RequestParam String fromAccountNumber, @RequestParam String toAccountNumber,
-            @RequestParam double amount, @RequestParam String description){
+            @RequestParam double amount, @RequestParam String description) throws MessagingException {
 
         Client client = this.clientRepository.findByEmail(authentication.getName());
         Account originAccount = accountRepository.findByNumber(fromAccountNumber);
@@ -44,7 +51,7 @@ public class TransactionController {
         }
 
         //Verificar que los números de cuenta no sean iguales
-        if (fromAccountNumber == toAccountNumber) {
+        if (fromAccountNumber.equals(toAccountNumber) ) {
             return new ResponseEntity<>("Elige una cuenta de destino diferente", HttpStatus.FORBIDDEN);
         }
 
@@ -83,6 +90,29 @@ public class TransactionController {
                 description+" "+originAccount.getNumber(),
                 LocalDateTime.now(),
                 destinationAccount)
+        );
+
+        FileSystemResource file = new FileSystemResource(new File("src/main/resources/static/web/img/LOGO_CON_TEXTO.png"));
+
+        emailService.send(
+                "noreply@antartidabank.com",
+                client.getEmail(),
+                new Date(),
+                "Transfer Notification",
+                "<html><header style=\"margin-top: 0; margin-bottom:16px; font-size:20px; line-height:32px; letter-spacing: -0.02em;\">\n" +
+                        "<b>Electronic Funds Transfer Voucher</b>\n<br>"+
+                        client.getFirstName()+ " "+client.getLastName() + "\n" +
+                        "</header>\n" +
+                        "<body><h3> A transfer for $"+amount+" has been made from your "+originAccount.getNumber()+" account to the "+ destinationAccount.getNumber()+" account</h3></body>\n " +
+                        "<footer><p style=\"margin: 0;\">\n" +
+                        "Antartida Bank Team\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "<small style=\"color:#B8B3B2; text-align: center\">\n" +
+                        "Note: This e-mail is generated automatically, please do not reply to this message.</small></p></footer></html>",
+                "LOGO_CON_TEXTO.png",
+                file
+
         );
 
         originAccount.setBalance(originAccount.getBalance() - amount);
