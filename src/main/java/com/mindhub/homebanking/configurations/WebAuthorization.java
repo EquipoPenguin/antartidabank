@@ -23,7 +23,7 @@ public class WebAuthorization extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/web/index.html").permitAll()
-                .antMatchers("/web/css/**", "/web/img/**", "/web/js/**").permitAll()
+                .antMatchers("/web/css/**", "/web/img/**", "/web/js/**", "/web/cartolas/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/**").hasAuthority("CLIENT");

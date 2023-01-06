@@ -21,6 +21,7 @@ public class ClientDTO {
     Set<CardDTO> cardsdto = new HashSet<CardDTO>();
 
     public ClientDTO(Client client) {
+        this.id = client.getId();
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.email = client.getEmail();
