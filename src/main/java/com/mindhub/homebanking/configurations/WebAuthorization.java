@@ -25,6 +25,7 @@ public class WebAuthorization extends WebSecurityConfigurerAdapter {
                 .antMatchers("/web/index.html").permitAll()
                 .antMatchers("/web/css/**", "/web/img/**", "/web/js/**", "/web/cartolas/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/**").permitAll()
+                .antMatchers("/swagger-ui/#/").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/**").hasAuthority("CLIENT");
 
