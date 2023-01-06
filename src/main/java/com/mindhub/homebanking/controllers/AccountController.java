@@ -23,12 +23,12 @@ public class AccountController {
     @Autowired
     private ClientRepository clientRepository;
 
-    @RequestMapping(value = "/accounts")
+    @GetMapping("/accounts")
     public List<AccountDTO> getAccounts() {
         return accountRepository.findAll().stream().map(AccountDTO::new).collect(toList());
     }
 
-    @RequestMapping(value = "/accounts/{id}")
+    @GetMapping("/accounts/{id}")
     public AccountDTO getAccount(@PathVariable Long id) {
         return accountRepository.findById(id).map(AccountDTO::new).orElse(null);
     }
