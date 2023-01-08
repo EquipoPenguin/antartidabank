@@ -4,6 +4,7 @@ import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.repositories.TransactionRepository;
+import com.mindhub.homebanking.services.OTPService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
@@ -23,19 +24,51 @@ public class TransactionController {
     private AccountRepository accountRepository;
     @Autowired
     private TransactionRepository transactionRepository;
-
     @Autowired
     private ClientRepository clientRepository;
-
     @Autowired
     private EmailService emailService;
+    @Autowired
+    public OTPService otpService;
 
+    @Transactional
+    @PostMapping("/sendOtp")
+    public ResponseEntity<Object> sendOtp(Authentication authentication) throws MessagingException {
+        Client client = this.clientRepository.findByEmail(authentication.getName());
+
+        //Logo
+        FileSystemResource file = new FileSystemResource(new File("src/main/resources/static/web/img/LOGO_CON_TEXTO.png"));
+
+        //OTP
+        int otp = otpService.generateOTP(client.getEmail());
+        emailService.sendOtpMessage(
+                "noreply@antartidabank.com",
+                client.getEmail(),
+                "Confirm your transfer",
+                "<html><header style=\"margin-top: 0; margin-bottom:16px; font-size:20px; line-height:32px; letter-spacing: -0.02em;\">\n" +
+                        "<b>OTP Transfer</b>\n<br>"+
+                        client.getFirstName()+ " "+client.getLastName() + "\n" +
+                        "</header>\n" +
+                        "<body><h3> Your OTP number is "+otp+"</h3></body>\n " +
+                        "<footer><p style=\"margin: 0;\">\n" +
+                        "Antartida Bank Team\n" +
+                        "</p>\n" +
+                        "<p>\n" +
+                        "<small style=\"color:#B8B3B2; text-align: center\">\n" +
+                        "Note: This e-mail is generated automatically, please do not reply to this message.</small></p></footer></html>",
+                "LOGO_CON_TEXTO.png",
+                file
+        );
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
     @Transactional
     @PostMapping("/transactions")
     public ResponseEntity<Object> transfer(
             Authentication authentication,
             @RequestParam String fromAccountNumber, @RequestParam String toAccountNumber,
-            @RequestParam double amount, @RequestParam String description) throws MessagingException {
+            @RequestParam double amount, @RequestParam String description,
+            @RequestParam int otpnum) throws MessagingException {
 
         Client client = this.clientRepository.findByEmail(authentication.getName());
         Account originAccount = accountRepository.findByNumber(fromAccountNumber);
@@ -75,6 +108,23 @@ public class TransactionController {
             return new ResponseEntity<>("No tiene suficientes fondos.", HttpStatus.FORBIDDEN);
         }
 
+        //Verificar la OTP
+        if (otpnum < 0) {
+            return new ResponseEntity<>("Ingresa la OTP", HttpStatus.FORBIDDEN);
+        }
+
+        int serverOtp = otpService.getOtp(client.getEmail());
+        if (serverOtp < 0) {
+            return new ResponseEntity<>("No tienes una OTP activa", HttpStatus.FORBIDDEN);
+        }
+
+        if (otpnum != serverOtp) {
+            return new ResponseEntity<>("OTP ingresada es inválida", HttpStatus.FORBIDDEN);
+        }
+
+        //Se elimina la OTP guardada
+        otpService.clearOTP(client.getEmail());
+
         transactionRepository.save(new Transaction(
                 TransactionType.DEBIT,
                 -amount,
@@ -92,6 +142,7 @@ public class TransactionController {
                 destinationAccount)
         );
 
+        //Logo
         FileSystemResource file = new FileSystemResource(new File("src/main/resources/static/web/img/LOGO_CON_TEXTO.png"));
 
         emailService.send(
@@ -122,7 +173,5 @@ public class TransactionController {
         accountRepository.save(destinationAccount);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
-
     }
-
 }

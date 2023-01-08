@@ -35,4 +35,17 @@ public class EmailService {
         helper.addInline(attachName, resource);
         mailSender.send(message);
     }
+
+    //Send OTP
+    public void sendOtpMessage(String from, String to, String subject, String message,
+                               String attachName, Resource resource) throws MessagingException {
+        MimeMessage msg = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+        helper.setFrom(from);
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(message, true);
+        helper.addInline(attachName, resource);
+        mailSender.send(msg);
+    }
 }
