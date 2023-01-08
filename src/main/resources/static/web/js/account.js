@@ -11,6 +11,7 @@ var app = new Vue({
             const id = urlParams.get('id');
             axios.get(`/api/accounts/${id}`)
             .then((response) => {
+
                 //get client ifo
                 this.accountInfo = response.data;
                 this.accountInfo.transactions.sort((a,b) => parseInt(b.id - a.id))
@@ -32,6 +33,17 @@ var app = new Vue({
                 this.errorToats.show();
             })
         },
+        generatedPdf: function(){
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        axios.get(`/api/generarpdf/${id}`)
+                    .then((response) => window.open("http://localhost:8080/web/cartolas/"+ response.data,"_blank"))
+                    .catch(() => {
+                        this.errorMsg = "Sign out failed"
+                        this.errorToats.show();
+                    })
+        },
+
     },
     mounted: function(){
         this.errorToats = new bootstrap.Toast(document.getElementById('danger-toast'));
