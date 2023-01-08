@@ -8,109 +8,118 @@ import java.util.Set;
 import static java.util.stream.Collectors.toList;
 
 @Entity
-    public class Client {
+public class Client {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
+    private long id;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
+    @OneToMany(mappedBy="client", fetch=FetchType.EAGER)
+    Set<Account> accounts = new HashSet<>();
+    @OneToMany(mappedBy="client", fetch=FetchType.EAGER)
+    Set<ClientLoan> clientLoans;
+    @OneToMany(mappedBy="client", fetch=FetchType.EAGER)
+    Set<Card> cards = new HashSet<>();
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-        @GenericGenerator(name = "native", strategy = "native")
-        private long id;
-        @OneToMany(mappedBy="client", fetch=FetchType.EAGER)
-        Set<Account> accounts = new HashSet<>();
-        @OneToMany(mappedBy="client", fetch=FetchType.EAGER)
-        Set<ClientLoan> clientLoans;
-        @OneToMany(mappedBy="client", fetch=FetchType.EAGER)
-        Set<Card> cards = new HashSet<>();
+    public Client() {
+    }
 
-        private String firstName;
-        private String lastName;
-        private String email;
-        private String password;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Client)) return false;
+        Client client = (Client) o;
+        return firstName.equals(client.firstName) && lastName.equals(client.lastName) && email.equals(client.email);
+    }
 
-        public Client() {
-        }
+    public Client(String first, String last, String email, String password) {
+        this.id= id;
+        this.firstName = first;
+        this.lastName = last;
+        this.email = email;
+        this.password = password;
+    }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Client)) return false;
-            Client client = (Client) o;
-            return firstName.equals(client.firstName) && lastName.equals(client.lastName) && email.equals(client.email);
-        }
+    public String toString() {
+        return firstName + " " + lastName;
+    }
+    public long getId() {
+        return id;
+    }
 
-        public Client(String first, String last, String email, String password) {
-            this.id= id;
-            this.firstName = first;
-            this.lastName = last;
-            this.email = email;
-            this.password = password;
-        }
+    public String getFirstName() {
+        return firstName;
+    }
 
-        public String toString() {
-            return firstName + " " + lastName;
-        }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-        public long getId() {
-            return id;
-        }
+    public String getLastName() {
+        return lastName;
+    }
 
-        public String getFirstName() {
-                    return firstName;
-                }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-        public void setFirstName(String firstName) {
-            this.firstName = firstName;
-        }
+    public String getEmail() {
+        return email;
+    }
 
-        public String getLastName() {
-            return lastName;
-        }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public Set<Account> getAccounts() {
+        return accounts;
+    }
 
-        public void setLastName(String lastName) {
-            this.lastName = lastName;
-        }
+    public void setAccount(Set<Account> account) {
+        this.accounts = accounts;
+    }
 
-        public String getEmail() {
-            return email;
-        }
+    public List<Loan> getLoans() {
+        return clientLoans.stream().map(sub -> sub.getLoan()).collect(toList());
+    }
 
-        public void setEmail(String email) {
-            this.email = email;
+    public Set<ClientLoan> getClientLoans() {
+        return clientLoans;
+    }
 
-        }
-        public Set<Account> getAccounts() {
-            return accounts;
-        }
+    public void setClientLoan(Set<ClientLoan> clientLoans) {
+        this.clientLoans = clientLoans;
+    }
 
-        public void setAccount(Set<Account> account) {
-            this.accounts = accounts;
-        }
+    public Set<Card> getCards() {
+        return cards;
+    }
 
-        public List<Loan> getLoans() {
-            return clientLoans.stream().map(sub -> sub.getLoan()).collect(toList());
-        }
+    public void setCard(Set<Card> card) {
+        this.cards = card;
+    }
 
-        public Set<ClientLoan> getClientLoans() {
-            return clientLoans;
-        }
+    public String getPassword() {
+        return password;
+    }
 
-        public void setClientLoan(Set<ClientLoan> clientLoans) {
-            this.clientLoans = clientLoans;
-        }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-        public Set<Card> getCards() {
-            return cards;
-        }
+    public void setAccounts(Set<Account> accounts) {
+        this.accounts = accounts;
+    }
 
-        public void setCard(Set<Card> card) {
-            this.cards = card;
-        }
+    public void setClientLoans(Set<ClientLoan> clientLoans) {
+        this.clientLoans = clientLoans;
+    }
 
-        public String getPassword() {
-            return password;
-        }
+    public void setCards(Set<Card> cards) {
+        this.cards = cards;
+    }
 
-        public void setPassword(String password) {
-            this.password = password;
-        }
 }
 
