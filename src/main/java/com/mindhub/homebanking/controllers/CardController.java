@@ -59,7 +59,7 @@ public class CardController {
         String cvv = String.format("%03d",getRandomNumber(1,1000));
 
         cardRepository.save(new Card(
-                client.getFirstName() + client.getLastName(),
+                client.getFirstName() + " " + client.getLastName(),
                 cardType,
                 cardColor,
                 number,

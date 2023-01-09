@@ -63,7 +63,7 @@ public class Pdf {
         // get day, month and year
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DATE);
-        int month = calendar.get(Calendar.MONTH) + 1; // Los meses van de 0 a 11
+        int month = calendar.get(Calendar.MONTH) + 1;
         int year = calendar.get(Calendar.YEAR);
         // create string "dd/mm/yyyy"
         String dateString = String.format(" %02d/%02d/%04d", day, month, year);
@@ -95,7 +95,6 @@ public class Pdf {
             contentStream1.setFont(PDType1Font.HELVETICA, 14);
             contentStream1.newLineAtOffset(50, offset);
             contentStream1.showText(
-                        //      transactionDTO.getId() + " | "
                               transactionDTO.getDescription() + " | "
                             + transactionDTO.getDate().toLocalDate().toString() + " | "
                             + transactionDTO.getType().toString() + " | "
