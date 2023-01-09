@@ -11,7 +11,6 @@ public class AccountDTO {
     private long id;
     Set<Transaction> transactions = new HashSet<Transaction>();
     Set<TransactionDTO> transactionsdto = new HashSet<TransactionDTO>();
-
     private String number;
     private LocalDateTime creationDate;
     private double balance;

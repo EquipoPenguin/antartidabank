@@ -1,8 +1,5 @@
 package com.mindhub.homebanking.dtos;
 
-import com.mindhub.homebanking.models.Loan;
-import java.util.List;
-
 public class LoanApplicationDTO {
 
     private long loanId;

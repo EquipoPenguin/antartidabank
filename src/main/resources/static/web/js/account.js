@@ -37,7 +37,7 @@ var app = new Vue({
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
         axios.get(`/api/generarpdf/${id}`)
-                    .then((response) => window.open("http://localhost:8080/web/cartolas/"+ response.data,"_blank"))
+                    .then((response) => window.open("/web/cartolas/"+ response.data,"_blank"))
                     .catch(() => {
                         this.errorMsg = "Sign out failed"
                         this.errorToats.show();

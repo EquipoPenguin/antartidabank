@@ -19,7 +19,6 @@ public class EmailService {
     }
 
     public EmailService() {
-
     }
 
     public void send(String from, String to, Date date, String subject,

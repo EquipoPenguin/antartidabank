@@ -1,6 +1,5 @@
 package com.mindhub.homebanking.util;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import com.mindhub.homebanking.dtos.AccountDTO;
 import com.mindhub.homebanking.dtos.ClientDTO;
@@ -25,10 +24,10 @@ public class Pdf {
         PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
         // logo image
-        PDImageXObject image = PDImageXObject.createFromFile("src\\main\\resources\\static\\web\\img\\LOGO_CON_TEXTO.png", document);
+        PDImageXObject image = PDImageXObject.createFromFile("/src/main/resources/static/web/img/LOGO_CON_TEXTO.png", document);
         contentStream.drawImage(image, 50, 780, 100, 60);
         // image watermark
-        PDImageXObject image2 = PDImageXObject.createFromFile("src\\main\\resources\\static\\web\\img\\INDEX_MARCA_AGUA.png", document);
+        PDImageXObject image2 = PDImageXObject.createFromFile("/src/main/resources/static/web/img/INDEX_MARCA_AGUA.png", document);
         contentStream.drawImage(image2, 200, 300, 200, 200);
 
         // title
@@ -79,7 +78,7 @@ public class Pdf {
 
         contentStream.close();
 
-        document.save("src\\main\\resources\\static\\web\\cartolas\\cartola_" + clientDTO.getFirstName() +"_"+ accountDTO.getNumber()+".pdf");
+        document.save("/src/main/resources/static/web/cartolas/cartola_" + clientDTO.getFirstName() +"_"+ accountDTO.getNumber()+".pdf");
         System.out.println("PDF created");
         document.close();
 

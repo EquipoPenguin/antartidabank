@@ -52,6 +52,7 @@ public class ClientController {
     private int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
+
     //Crea un nuevo servicio para registrar un cliente
     @PostMapping("/clients")
     public ResponseEntity<Object> register(
@@ -79,6 +80,7 @@ public class ClientController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    //Generar PDF de cartola de transacciones
     @GetMapping ("/generarpdf/{id}")
     public String generarPDF(Authentication authentication, @PathVariable Long id) throws IOException {
         Client client = this.clientRepository.findByEmail(authentication.getName());

@@ -7,8 +7,8 @@ import com.mindhub.homebanking.models.ClientLoan;
 
 import java.util.HashSet;
 import java.util.Set;
-public class ClientDTO {
 
+public class ClientDTO {
     private long id;
     private String firstName;
     private String lastName;
