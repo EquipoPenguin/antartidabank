@@ -49,7 +49,8 @@ public class TransactionController {
                         "<b>OTP Transfer</b>\n<br>"+
                         client.getFirstName()+ " "+client.getLastName() + "\n" +
                         "</header>\n" +
-                        "<body><h3> Your OTP number is "+otp+"</h3></body>\n " +
+                        "<body><h3> Your OTP number is "+otp+"</h3>\n" +
+                        "<h3>This password will expire in 3 minutes</h3></body>\n " +
                         "<footer><p style=\"margin: 0;\">\n" +
                         "Antartida Bank Team\n" +
                         "</p>\n" +

@@ -56,7 +56,7 @@ public class HomebankingApplication {
 		   	cardRepository.save(new Card("Melba Morel", CardType.CREDIT, CardColor.TITANIUM, "4345 4859 6325 8564", "369", LocalDateTime.now(), LocalDateTime.now().plusYears(5), client1 ));
 
 
-			Client client2 = repository.save(new Client("Carla", "Hidalgo", "aqf@gmail.com", passwordEncoder.encode("1234")));
+			Client client2 = repository.save(new Client("Carla", "Hidalgo", "carlita.nicole96@gmail.com", passwordEncoder.encode("1234")));
 
 			Account account3 = accountRepository.save(new Account("VIN367", LocalDateTime.now(), 10000, client2));
 			Account account4 = accountRepository.save(new Account("VIN368", LocalDateTime.now(), 100000, client2));
@@ -67,7 +67,7 @@ public class HomebankingApplication {
 
 			clientLoanRepository.save(new ClientLoan(200000, 36, client2, automotriz));
 
-			cardRepository.save(new Card("Carolina Zapata", CardType.CREDIT, CardColor.TITANIUM, "4345 7845 9586 2514", "485", LocalDateTime.now(), LocalDateTime.now().plusYears(5), client2 ));
+			cardRepository.save(new Card("Carla Hidalgo", CardType.CREDIT, CardColor.TITANIUM, "4345 7845 9586 2514", "485", LocalDateTime.now(), LocalDateTime.now().plusYears(5), client2 ));
 
 		};
 	}
