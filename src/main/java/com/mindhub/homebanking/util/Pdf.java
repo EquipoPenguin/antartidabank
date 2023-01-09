@@ -25,10 +25,10 @@ public class Pdf {
         PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
         // logo image
-        PDImageXObject image = PDImageXObject.createFromFile("C:\\Users\\alejandro.vera\\Desktop\\accenture-api-bootcamp\\antartidabank\\src\\main\\resources\\static\\web\\img\\LOGO_CON_TEXTO.png", document);
+        PDImageXObject image = PDImageXObject.createFromFile("src\\main\\resources\\static\\web\\img\\LOGO_CON_TEXTO.png", document);
         contentStream.drawImage(image, 50, 780, 100, 60);
         // image watermark
-        PDImageXObject image2 = PDImageXObject.createFromFile("C:\\Users\\alejandro.vera\\Desktop\\accenture-api-bootcamp\\antartidabank\\src\\main\\resources\\static\\web\\img\\INDEX_MARCA_AGUA.png", document);
+        PDImageXObject image2 = PDImageXObject.createFromFile("src\\main\\resources\\static\\web\\img\\INDEX_MARCA_AGUA.png", document);
         contentStream.drawImage(image2, 200, 300, 200, 200);
 
         // title
@@ -79,7 +79,7 @@ public class Pdf {
 
         contentStream.close();
 
-        document.save("C:\\Users\\alejandro.vera\\Desktop\\accenture-api-bootcamp\\antartidabank\\src\\main\\resources\\static\\web\\cartolas\\cartola_" + clientDTO.getFirstName() +"_"+ accountDTO.getNumber()+".pdf");
+        document.save("src\\main\\resources\\static\\web\\cartolas\\cartola_" + clientDTO.getFirstName() +"_"+ accountDTO.getNumber()+".pdf");
         System.out.println("PDF created");
         document.close();
 
@@ -88,7 +88,6 @@ public class Pdf {
     //body method
     private void body (PDPageContentStream contentStream1, PDPage page, Set<TransactionDTO> transactionDTOList) throws IOException {
 
-       // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         int offset = 700;
         for (TransactionDTO transactionDTO : transactionDTOList ) {
             offset -= 20;
